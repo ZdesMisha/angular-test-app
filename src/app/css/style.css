@@ -1,0 +1,28 @@
+body{
+    height: 90vh !important;
+}
+.ng-valid .ng-dirty{
+    border-color: green;
+}
+.ng-invalid .ng-dirty{
+    border-color: red;
+}
+.my-nav{
+    margin: 10px;
+    padding-bottom: 30px;
+}
+.main-container{
+    height: 100%;
+    z-index: 1000;
+    display: block;
+}
+.footer {
+    clear: both;
+    position: absolute;
+    z-index: 10;
+    height: 3em;
+    margin-left: 20px;
+}
+.search-bar{
+    width: 100% !important;
+}

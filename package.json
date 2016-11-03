@@ -1,0 +1,18 @@
+{
+  "name": "angularjs",
+  "version": "1.0.0",
+  "description": "Datart Angular Course Project",
+  "main": "index.js",
+  "scripts": {
+    "prestart": "npm install",
+    "postinstall": "bower install",
+    "start": "http-server ./src/app -a localhost -p 8000 -c-1"
+  },
+  "author": "Misha Kharkov",
+  "license": "ISC",
+  "dependencies": {},
+  "devDependencies": {
+    "bower": "^1.7.9",
+    "http-server": "^0.9.0"
+  }
+}
