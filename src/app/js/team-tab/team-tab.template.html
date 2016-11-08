@@ -1,17 +1,20 @@
 <div class="input-group my-nav">
-    <form name="reviewForm" ng-submit="reviewForm.$valid && tab.addTeam()" novalidate>
+    <form name="reviewForm" ng-submit="reviewForm.$valid && addTeam()" novalidate>
                 <span class="input-group-btn">
-                    <input ng-pattern="/^([A-Za-z0-9]{3,20})$/" ng-model="tab.team.name" class="form-control"
+                    <input ng-pattern="/^([A-Za-z0-9]{3,20})$/" ng-model="newTeam.name" class="form-control"
                            type="text" required>
                     <input class="btn btn-default " type="submit" value="Add"/>
                 </span>
     </form>
 </div>
 <uib-accordion close-others="true">
-    <div uib-accordion-group class="panel-default" heading="{{team.name}}" ng-repeat="team in tab.teams">
+    <div uib-accordion-group class="panel-default" heading="{{team.name}}" ng-repeat="team in teams"
+         ng-click="selectTeam(team)"  is-open="team.isOpen">
         <ul class="list-group">
             <li class="list-group-item" ng-repeat="mate in team.mates">{{mate.name}}</li>
         </ul>
     </div>
 </uib-accordion>
+
+
 

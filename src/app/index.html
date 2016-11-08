@@ -10,6 +10,7 @@
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
     <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="bower_components/angular/angular.js"></script>
+    <script type="text/javascript" src="bower_components/ngInfiniteScroll/build/ng-infinite-scroll.js"></script>
     <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
     <script src="bower_components/angular-ui-select/dist/select.js"></script>
     <script src="bower_components/angular-route/angular-route.js"></script>
@@ -17,6 +18,7 @@
     <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
     <script src="js/app.module.js"></script>
     <script src="js/app.config.js"></script>
+    <script src="js/team-buffer/team-buffer.module.js"></script>
     <script src="js/panel-controller/view-panel.module.js"></script>
     <script src="js/team-tab/team-tab.module.js"></script>
     <script src="js/search-bar/search-bar.module.js"></script>
@@ -28,11 +30,11 @@
 
 <div class="container main-container">
 
-    <div class="row row-offcanvas row-offcanvas-right">
-        <div class="col-xs-12 col-sm-9">
-            <view-panel></view-panel>
+    <div class="row row-offcanvas row-offcanvas-right my-row">
+        <div class="col-xs-12 col-sm-9 my-row">
+            <view-panel ></view-panel>
 
-            <div ng-view></div>
+            <div ng-view class="my-row"></div>
         </div>
         <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar">
             <!--<add-group-bar></add-group-bar>-->

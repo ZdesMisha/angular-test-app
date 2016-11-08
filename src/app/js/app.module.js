@@ -2,6 +2,8 @@ angular.module('userManagerApp', [
     'ui.select',
     'ngSanitize',
     'ngRoute',
+    'team-buffer',
+
     // 'ngAnimate',
     'ui.bootstrap',
     'view-panel',

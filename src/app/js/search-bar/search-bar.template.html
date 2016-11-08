@@ -1,8 +1,10 @@
-<section>
-    <ui-select multiple tagging="searching.tagTransform" ng-model="searching.selectedPeople"
+<section ng-model="selectedPeople">
+
+    <ui-select multiple tagging="searching.tagTransform"
                theme="bootstrap"
                ng-disabled="disabled" title="Choose a person" class="search-bar">
-        <ui-select-match placeholder="Select person...">{{$item.name}} ({{$item.grade}} {{$item.job}})</ui-select-match>
+        <ui-select-match
+                placeholder="Select person...">{{$item.name}} ({{$item.grade}} {{$item.job}})</ui-select-match>
         <ui-select-choices
                 repeat="person in searching.people | propsFilter: {name: $select.search, age: $select.search}">
             <div ng-if="person.isTag" ng-bind-html="person.name +''| highlight: $select.search"></div>
@@ -14,6 +16,8 @@
             </small>
 
         </ui-select-choices>
+
     </ui-select>
+    <button class="btn btn-default btn-xs" ng-click="searching.synchronize()" ng-disabled="selectedPeople.length==0">Synch</button>
 </section>
 

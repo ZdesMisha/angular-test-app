@@ -1,14 +1,26 @@
-<table class="table table-hover">
-    <tr>
-        <th>Name</th>
-        <th>Age</th>
-        <th>Grade</th>
-        <th>Job</th>
-    </tr>
-    <tr class="input-row" ng-repeat="user in store.users">
-        <td>{{user.name}}</td>
-        <td>{{user.age}}</td>
-        <td>{{user.grade}}</td>
-        <td>{{user.job}}</td>
-    </tr>
-</table>
+<div class="constrained">
+    <table class="table table-hover " infinite-scroll="store.increaseLimit()"
+           infinite-scroll-container='".constrained"'>
+        <tr>
+            <th>Name</th>
+            <th>Age</th>
+            <th>Grade</th>
+            <th>Job</th>
+        </tr>
+        <tr ng-repeat="user in store.totalItems | limitTo:store.limit">
+            {{store.showedItems.length}}
+            <td>{{user.name}}</td>
+            <td>{{user.age}}</td>
+            <td>{{user.grade}}</td>
+            <td>{{user.job}}</td>
+        </tr>
+        <!--<div  ng-controller="MyCtrl">-->
+        <!--<table infinite-scroll="increaseLimit()" infinite-scroll-container='".constrained"'>-->
+        <!--<tr ng-repeat="item in items | limitTo:barLimit">-->
+        <!--<td>Number</td>-->
+        <!--<td>{{item.number}}</td>-->
+        <!--</tr>-->
+        <!--</table>-->
+        <!--</div>-->
+    </table>
+</div>

@@ -1,6 +1,6 @@
 'use strict';
 (function () {
-    var app = angular.module('search-bar', []);
+    var app = angular.module('search-bar', ['team-buffer']);
 
     app.filter('propsFilter', function () {
         return function (items, props) {
@@ -31,16 +31,29 @@
         };
     });
 
+
     app.directive('searchBar', function () {
-        var controller = function ($http) {
+        var controller = ['$http', '$scope', 'teamService', function ($http, $scope, teamService) {
+
+            $scope.selectedPeople = [];
+
             var self = this;
-            self.selectedPeople = [];
             self.people = [];
 
             $http.get("/data.json").success(function (data) {
-                self.people = data.slice(1,10);
+                self.people = data.slice(1, 10);
             });
-            
+
+            $scope.$watch('teamService.setTeamPeople()', function () {
+                console.log('New team selected');
+                $scope.selectedPeople = teamService.getTeamPeople();
+            });
+
+            self.synchronize = function () {
+                console.log('Synchronization started');
+                teamService.synchronize();
+            };
+
             self.tagTransform = function (newTag) {
                 var item = {
                     name: newTag,
@@ -50,8 +63,8 @@
                 };
                 return item;
             };
-            
-        };
+
+        }];
         return {
             restrict: "E",
             templateUrl: 'js/search-bar/search-bar.template.html',
