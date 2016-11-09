@@ -1,6 +1,6 @@
 'use strict';
 (function () {
-    var app = angular.module('search-bar', ['team-buffer']);
+    var app = angular.module('search-bar', ['team-buffer', 'ui-select-infinity']);
 
     app.filter('propsFilter', function () {
         return function (items, props) {
@@ -26,32 +26,55 @@
             } else {
                 out = "No such users";
             }
-
             return out;
         };
     });
 
 
     app.directive('searchBar', function () {
-        var controller = ['$http', '$scope', 'teamService', function ($http, $scope, teamService) {
+        var controller = ['$http', '$scope', '$rootScope', function ($http, $scope, $rootScope) {
 
-            $scope.selectedPeople = [];
 
             var self = this;
+            $scope.showedPeople = [];
+            $scope.totalPeople = [];
             self.people = [];
+            self.selectedPeople = [];
+            self.limit = 50;
+            self.pagination = {
+                currentPage: 0,
+                perPage: 30,
+                maxPages: 50,
+                totalPages: 0
+            };
 
-            $http.get("/data.json").success(function (data) {
-                self.people = data.slice(1, 10);
+            $scope.$on('BOOM!', function () {
+                console.log("GOT BOOM!");
             });
+
+            $scope.getNextPage = function () {
+                self.pagination.currentPage++;
+                $scope.showedPeople = $scope.totalPeople.slice(1, self.pagination.perPage * self.pagination.currentPage)
+            };
+
+            self.initialLoad = function () {
+                $http.get('/data.json').success(function (data) {
+                    $scope.totalPeople = data;
+                    $scope.showedPeople = data.slice(1, self.pagination.perPage);
+                    self.pagination.currentPage = 1;
+                    self.totalpages = data.length / self.pagination.maxPages;
+                });
+            };
+
 
             $scope.$watch('teamService.setTeamPeople()', function () {
                 console.log('New team selected');
-                $scope.selectedPeople = teamService.getTeamPeople();
+                //$scope.selectedPeople = teamService.getTeamPeople();
             });
 
             self.synchronize = function () {
                 console.log('Synchronization started');
-                teamService.synchronize();
+               // teamService.synchronize();
             };
 
             self.tagTransform = function (newTag) {
@@ -64,7 +87,11 @@
                 return item;
             };
 
+            self.initialLoad();
+
         }];
+
+
         return {
             restrict: "E",
             templateUrl: 'js/search-bar/search-bar.template.html',

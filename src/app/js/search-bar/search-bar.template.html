@@ -1,12 +1,16 @@
-<section ng-model="selectedPeople">
+<section ng-model="searching.selectedPeople">
 
     <ui-select multiple tagging="searching.tagTransform"
                theme="bootstrap"
-               ng-disabled="disabled" title="Choose a person" class="search-bar">
+               ng-disabled="disabled"
+               title="Choose a person"
+               class="search-bar">
         <ui-select-match
-                placeholder="Select person...">{{$item.name}} ({{$item.grade}} {{$item.job}})</ui-select-match>
+                placeholder="Select person..."> <a tooltip-placement="top" uib-tooltip="{{$item.grade}} {{$item.job}}, {{$item.age}} years">{{$item.name}}</a>
+        </ui-select-match>
         <ui-select-choices
-                repeat="person in searching.people | propsFilter: {name: $select.search, age: $select.search}">
+                refresh-delay="300"
+                repeat="person in showedPeople | propsFilter: {name: $select.search, age: $select.search}">
             <div ng-if="person.isTag" ng-bind-html="person.name +''| highlight: $select.search"></div>
             <div ng-if="!person.isTag" ng-bind-html="person.name + person.isTag| highlight: $select.search"></div>
             <small>
@@ -14,10 +18,26 @@
                 grade: {{person.grade}};
                 age: <span ng-bind-html="''+person.age | highlight: $select.search"></span>
             </small>
+            <div ng-if="$index == showedPeople.length-1">
+                <button
+                        ng-if="!useNgMouseover"
+                        class="btn btn-xs btn-success"
+                        style="width: 100%; margin-top: 5px;"
+                        ng-mouseover="getNextPage();"
+                        ng-disabled="loading">Load more...</button>
+                <button
+                        ng-if="useNgMouseover"
+                        class="btn btn-xs btn-danger"
+                        style="width: 100%; margin-top: 5px;"
+                        ng-mouseover="getNextPage();"
+                        ng-disabled="loading">Mouse over load more...</button>
+            </div>
 
         </ui-select-choices>
 
     </ui-select>
-    <button class="btn btn-default btn-xs" ng-click="searching.synchronize()" ng-disabled="selectedPeople.length==0">Synch</button>
+    <button class="btn btn-default btn-xs" ng-click="searching.synchronize()"
+            ng-disabled="searching.selectedPeople.length==0">Synch
+    </button>
 </section>
 

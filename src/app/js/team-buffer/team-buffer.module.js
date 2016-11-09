@@ -3,6 +3,7 @@
  */
 (function () {
     var app = angular.module('team-buffer', []);
+
     app.factory('notify', function () {
         var bufferedTeam = {};
         return function (team) {

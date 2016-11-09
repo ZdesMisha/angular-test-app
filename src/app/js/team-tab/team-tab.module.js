@@ -3,7 +3,7 @@
     var app = angular.module('team-tab', ['team-buffer']);
 
     app.directive('teamTab', function () {
-        var controller = ['$rootScope','$scope', 'teamService', function ($rootScope,$scope, teamService) {
+        var controller = ['$rootScope','$scope', function ($rootScope,$scope) {
 
             $scope.isTabOpened = false;
             $scope.tabSelectedTeam = {name: "", mates: []};
@@ -11,7 +11,7 @@
 
             $scope.addTeam = function () {
                 $scope.teams.push($scope.newTeam);
-                $scope.tabSelectedTeam = {name: "", mates: []};
+                $scope.newTeam = {name: "", mates: []};
 
             };
 
@@ -23,10 +23,10 @@
                 if ($scope.isTabOpened) {
                     console.log("OPENED");
                     $scope.tabSelectedTeam = {name: selected.name, mates: selected.mates};
-                    teamService.setTeamPeople($scope.tabSelectedTeam.mates);
+                    //teamService.setTeamPeople($scope.tabSelectedTeam.mates);
                 } else {
                     console.log("CLOSED");
-                    teamService.setTeamPeople([]);
+                    //teamService.setTeamPeople([]);
                 }
                 $rootScope.$broadcast('BOOM!', "Hello bitch")
             };

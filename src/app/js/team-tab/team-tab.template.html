@@ -11,7 +11,7 @@
     <div uib-accordion-group class="panel-default" heading="{{team.name}}" ng-repeat="team in teams"
          ng-click="selectTeam(team)"  is-open="team.isOpen">
         <ul class="list-group">
-            <li class="list-group-item" ng-repeat="mate in team.mates">{{mate.name}}</li>
+            <li class="list-group-item" ng-repeat="mate in team.mates" tooltip-placement="top" uib-tooltip="{{mate.grade}} {{mate.job}}, {{mate.age}} years">{{mate.name}}</li>
         </ul>
     </div>
 </uib-accordion>

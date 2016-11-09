@@ -137,7 +137,7 @@
 
             self.increaseLimit = function () {
                 self.limit += 50;
-                console.log('Increase people Limit', self.limit)
+                console.log('Increase peopleeeee Limit', self.limit)
             };
 
             self.initialLoad = function () {
