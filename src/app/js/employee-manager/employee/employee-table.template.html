@@ -1,0 +1,34 @@
+<div class="constrained">
+    <table class="table table-hover " infinite-scroll="getNextPage()"
+           infinite-scroll-container='".constrained"'>
+        <tr>
+            <th>Name</th>
+            <th>Age</th>
+            <th>Grade</th>
+            <th>Job</th>
+            <th>Add</th>
+        </tr>
+
+        <tbody>
+        <tr ng-repeat="employee in showedEmployees">
+            <td>{{employee.name}}</td>
+            <td>{{employee.age}}</td>
+            <td>{{employee.grade}}</td>
+            <td>{{employee.job}}</td>
+            <td>
+                <button type="button" ng-click="addEmployee(employee)" class="btn btn-sm btn-success"
+                        ng-disabled="!teamService.accordionOpen.some(isOpened)"
+                        tooltip-placement="left"
+                        uib-tooltip="Sorry, this user already has team"
+                        tooltip-is-open="isError && {{employee.id}}==employeeToAdd.id"
+                        tooltip-trigger="'none'">
+                    <i class="glyphicon glyphicon-plus">
+                    </i>
+                </button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+<p>{{showedEmployees.length}}/{{employees.length}}</p>

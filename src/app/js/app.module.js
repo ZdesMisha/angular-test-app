@@ -1,14 +1,12 @@
-angular.module('userManagerApp', [
+angular.module('app', [
+
+    // --- angular modules ---
     'ui.select',
     'ngSanitize',
     'ngRoute',
-    'team-buffer',
-
-    // 'ngAnimate',
     'ui.bootstrap',
-    'view-panel',
-    'user-list',
-   // 'add-group-bar',
-    'search-bar',
-    'team-tab'
+    // 'ngAnimate',
+
+    // --- custom user modules ---
+    'employee-manager'
 ]);

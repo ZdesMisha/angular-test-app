@@ -1,0 +1,47 @@
+<section ng-model="selectedEmployees" ng-keydown="clear()">
+    <ui-select multiple
+               remove-selected="false"
+               tagging="transform"
+               theme="bootstrap"
+               ng-disabled="disabled"
+               title="Choose a person"
+               class="search-bar">
+        <ui-select-match placeholder="Select employee...">
+            <a tooltip-placement="top"
+               uib-tooltip="{{$item.grade}} {{$item.job}}, {{$item.age}} years">{{$item.name}}</a>
+        </ui-select-match>
+        <ui-select-choices
+                refresh-delay="300"
+                repeat="employee in employees | propsFilter: {name: $select.search, age: $select.search} | limitTo: limit">
+            <div ng-if="employee.isTag" ng-bind-html="employee.name +''| highlight: $select.search"></div>
+            <div ng-if="!employee.isTag" ng-bind-html="employee.name + employee.isTag| highlight: $select.search"></div>
+            <small>
+                job: {{employee.job}};
+                grade: {{employee.grade}};
+                age: <span ng-bind-html="''+employee.age | highlight: $select.search"></span>
+            </small>
+            <div ng-if="$index == limit-1">
+                <button
+                        ng-if="!useNgMouseover"
+                        class="btn btn-xs btn-success"
+                        style="width: 100%; margin-top: 5px;"
+                        ng-mouseover="increaseLimit();"
+                        ng-disabled="loading">Load more...
+                </button>
+                <button
+                        ng-if="useNgMouseover"
+                        class="btn btn-xs btn-danger"
+                        style="width: 100%; margin-top: 5px;"
+                        ng-mouseover="increaseLimit();"
+                        ng-disabled="loading">Mouse over load more...
+                </button>
+            </div>
+
+        </ui-select-choices>
+
+    </ui-select>
+    <button class="btn btn-default btn-xs" ng-click="synchronize()"
+            ng-disabled="!teamService.accordionOpen.some(isOpened)">Synchronize
+    </button>
+</section>
+

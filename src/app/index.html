@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" ng-app="userManagerApp">
+<html lang="en" ng-app="app">
 <head>
     <meta charset="utf-8">
     <title>My HTML File</title>
@@ -17,14 +17,13 @@
     <script src="bower_components/angular-route/angular-route.js"></script>
     <script src="bower_components/angular-bootstrap/ui-bootstrap.js"></script>
     <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+
     <script src="js/app.module.js"></script>
-    <script src="js/app.config.js"></script>
-    <script src="js/team-buffer/team-buffer.module.js"></script>
-    <script src="js/panel-controller/view-panel.module.js"></script>
-    <script src="js/team-tab/team-tab.module.js"></script>
-    <script src="js/search-bar/search-bar.module.js"></script>
-    <script src="js/add-group-bar/add-group-bar.module.js"></script>
-    <script src="js/user-list/user-list.module.js"></script>
+    <script src="js/employee-manager/data-repository/data-repository.module.js"></script>
+    <script src="js/employee-manager/employee-manager.module.js"></script>
+    <script src="js/employee-manager/team/team.module.js"></script>
+    <script src="js/employee-manager/employee/employee.module.js"></script>
+
 </head>
 <body>
 
@@ -35,7 +34,7 @@
             <div ng-view class="my-row"></div>
         </div>
         <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar">
-            <team-tab></team-tab>
+            <team-accordion></team-accordion>
         </div>
     </div>
 </div>

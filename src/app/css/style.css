@@ -62,11 +62,18 @@ body {
 .my-row {
     height: 95%;
 }
-.constrained{
-    height:100%;
-    overflow-y:scroll;
+
+.constrained {
+    height: 100%;
+    overflow-y: auto;
 }
-.search-constrained{
-    height:100%;
-    overflow-y:scroll;
+
+.search-constrained {
+    height: 100%;
+    overflow-y: scroll;
 }
+
+.table-hover tbody tr.highlight {
+    background-color: lightgreen;
+}
+
