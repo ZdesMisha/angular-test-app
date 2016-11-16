@@ -26,7 +26,6 @@ angular.module('data-repository', [])
             getById: getById,
             getAll: getAll,
             upload:upload
-
         }
     }])
 
@@ -43,14 +42,18 @@ angular.module('data-repository', [])
             return teams;
         }
 
-        function isNameAvailable(name) {
-            return $.grep(teams, function (next) {
-                    return next.name.toLowerCase() === name.toLowerCase();
-                }).length == 0;
-        }
-
         function add(team) {
             teams.push(team);
+        }
+
+
+        function update(team) {
+            for (var i = 0; i <= teams.length; i++) {
+                if (teams[i].id == team.id) {
+                    teams[i] = team;
+                    break;
+                }
+            }
         }
 
         function removeEmployee(teamId, employeeId) {
@@ -65,18 +68,15 @@ angular.module('data-repository', [])
             })
         }
 
-        function update(team) {
-            for (var i = 0; i <= teams.length; i++) {
-                if (teams[i].id == team.id) {
-                    teams[i] = team;
-                    break;
-                }
-            }
+        function isNameAvailable(name) {
+            return $.grep(teams, function (next) {
+                    return next.name.toLowerCase() === name.toLowerCase();
+                }).length == 0;
         }
+
 
         // add initial team
         add({id: 12345678, name: "Moody team", employees: []});
-        console.log("INITIATING DATA STORE");
 
         return {
             add: add,
@@ -84,7 +84,6 @@ angular.module('data-repository', [])
             isNameAvailable: isNameAvailable,
             getAll: getAll,
             getById: getById,
-            removeEmployee: removeEmployee,
+            removeEmployee: removeEmployee
         }
-
     });

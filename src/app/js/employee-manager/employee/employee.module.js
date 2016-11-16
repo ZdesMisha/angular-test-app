@@ -22,8 +22,99 @@ angular.module('employee', ['ui-select-infinity', 'infinite-scroll', 'data-repos
             return out;
         };
     })
+    .controller('EmployeeController', ['$rootScope', '$scope', '$timeout', 'EmployeeRepositoryService', 'TeamService', 'EmployeeService',
+        function ($rootScope, $scope, $timeout, employeeRepositoryService, teamService, employeeService) {
+
+            $scope.pagination = {
+                limit: 30
+            };
+            $scope.error = {
+                table: false,
+                search: false
+            };
+            $scope.teamService = teamService;
+            $scope.employees = [];
+            $scope.selectedEmployees = [];
+            $scope.employeeToAdd = {};
+            $scope.tableSearch = "";
+
+
+            employeeService.upload().then(function (data) {
+                $scope.employees = data;
+            });
+            
+            $scope.transform = function (employee) {
+                return {
+                    name: employee,
+                    age: 'unknown',
+                    grade: 'unknown',
+                    job: 'unknown'
+                };
+            };
+            
+            $scope.clear = function () {
+                $scope.pagination.limit = 30;
+            };
+            
+            $scope.increaseLimit = function () {
+                console.log("limit increased"); //todo HOW TO INCREASE LIMIT CORRECTLY???
+                $scope.pagination.limit += $scope.pagination.limit;
+            };
+
+            $scope.isOpened = function (index) {
+                return index == true;
+            };
+            
+            $scope.synchronizeEmployees = function () {
+                var employeesToSynch = [];
+                if (teamService.isAnyTeamOpen()) {
+                    $scope.selectedEmployees.forEach(function (employee) {
+                        if (teamService.canSynch(employee.id)) {
+                            employeesToSynch.push(employee);
+                        } else {
+                            showSearchTooltip();
+                        }
+                    });
+                    $rootScope.$broadcast('SynchronizeEvent', employeesToSynch);
+                }
+            };
+            
+            $scope.addEmployee = function (employee) {
+                $scope.employeeToAdd = employee;
+                if (teamService.isAnyTeamOpen()) {
+                    if (teamService.canAdd($scope.employeeToAdd.id)) {
+                        $rootScope.$broadcast('AddEmployeeEvent', $scope.employeeToAdd);
+                    } else {
+                        showTableTooltip();
+                    }
+                }
+            };
+            
+            $scope.$on('TeamChangedEvent', function (event, teamId) {
+                if (teamId != null) {
+                    $scope.selectedEmployees = teamService.getById(teamId).employees || [];
+                } else {
+                    $scope.selectedEmployees = [];
+                }
+            });
+            
+            function showTableTooltip() {
+                $scope.error.table = true;
+                $timeout(function () {
+                    $scope.error.table = false;
+                }, 3000);
+            }
+            
+            function showSearchTooltip() {
+                $scope.error.search = true;
+                $timeout(function () {
+                    $scope.error.search = false;
+                }, 3000);
+            }
+        }])
 
     .factory('EmployeeService', ['EmployeeRepositoryService', function (employeeRepositoryService) {
+
         function upload() {
             return employeeRepositoryService.upload().then(function (data) {
                 return data;
@@ -35,131 +126,10 @@ angular.module('employee', ['ui-select-infinity', 'infinite-scroll', 'data-repos
         }
 
         return {
-            selectedEmployees: [],
             getAll: getAll,
             upload: upload
         }
-
     }])
-    .controller('EmployeeController', ['$rootScope', '$scope', '$timeout', 'EmployeeRepositoryService', 'TeamService', 'EmployeeService',
-        function ($rootScope, $scope, $timeout, employeeRepositoryService, teamService, employeeService) {
-            console.log('INITIATING EMPLOYEE CONTROLLER');
-            $scope.pagination = {
-                limit: 30,
-                perPage: 30,
-                currentPage: 0,
-                totalPages: 0
-            };
-            $scope.error = {
-                table: false,
-                search: false
-            };
-            $scope.employees = [];
-            $scope.showedEmployees = [];
-            $scope.pagination.totalPages = $scope.employees.length / $scope.pagination.perPage;
-            $scope.selectedEmployees = [];
-            $scope.teamService = teamService;
-            $scope.employeeToAdd = {};
-            $scope.tableSearch = "";
-
-            employeeService.upload().then(function (data) {
-                $scope.employees = data;
-                $scope.showedEmployees = $scope.employees.slice(0, $scope.pagination.perPage);
-            });
-
-            $scope.transform = function (employee) {
-                return {
-                    name: employee,
-                    age: 'unknown',
-                    grade: 'unknown',
-                    job: 'unknown'
-                };
-            };
-
-            $scope.clear = function () {
-                $scope.pagination.limit = $scope.pagination.perPage;
-                $scope.pagination.currentPage = 0;
-            };
-
-            $scope.increaseLimit = function () {
-                $scope.pagination.limit += $scope.pagination.limit;
-                $scope.pagination.currentPage++;
-            };
-
-            $scope.synchronizeEmployees = function () {
-                var employeesToSynch = [];
-                if (isAccordionOpened()) {
-                    console.log("SYNCH");
-                    $scope.selectedEmployees.forEach(function (employee) {
-                        if (!teamService.canSynch(employee.id)) {
-                            showSearchTooltip();
-                        } else {
-                            employeesToSynch.push(employee);
-                        }
-                    });
-                    $rootScope.$broadcast('SynchronizeEvent', employeesToSynch);
-                } else {
-                    console.log("Cannot synchronize!")
-                }
-            };
-
-            $scope.addEmployee = function (employee) {
-                $scope.employeeToAdd = employee;
-                if (isAccordionOpened()) {
-                    console.log("ADD");
-                    if (teamService.canAdd($scope.employeeToAdd.id)) {
-                        $rootScope.$broadcast('AddEmployeeEvent', $scope.employeeToAdd);
-                    } else {
-                        showTableTooltip();
-                    }
-                } else {
-                    console.log("Please chose team.Cannot add employee!")
-                }
-            };
-
-
-            $scope.getNextPage = function () {
-                //todo check if it possible to paginate
-                $scope.pagination.currentPage++;
-                $scope.showedEmployees = $scope.employees.slice(1, $scope.pagination.perPage * $scope.pagination.currentPage)
-            };
-
-            $scope.isOpened = function (index) {
-                return index == true;
-            };
-
-            $scope.$on('TeamChangedEvent', function (event, teamId) {
-                if (teamId != null) {
-                    $scope.selectedEmployees = teamService.getById(teamId).employees || [];
-                } else {
-                    $scope.selectedEmployees = [];
-                }
-            });
-
-            $scope.isAvailable = function (empId) {
-                return teamService.canSynch(empId);
-            };
-
-            function isAccordionOpened() {
-                return $.grep($scope.teamService.anyTeamOpen, function (index) {
-                        return index == true;
-                    }).length != 0;
-            }
-
-            function showTableTooltip() {
-                $scope.error.table = true;
-                $timeout(function () {
-                    $scope.error.table = false;
-                }, 3000);
-            }
-
-            function showSearchTooltip() {
-                $scope.error.search = true;
-                $timeout(function () {
-                    $scope.error.search = false;
-                }, 3000);
-            }
-        }])
 
 
     .directive('employeeSearchBar', function () {

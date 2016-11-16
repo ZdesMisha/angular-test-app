@@ -1,11 +1,11 @@
 'use strict';
-var app = angular.module('team', ['employee', 'data-repository'])
+angular.module('team', ['employee', 'data-repository'])
 
     .controller('TeamController', ['$rootScope', '$scope', '$timeout', 'TeamService',
         function ($rootScope, $scope, $timeout, teamService) {
 
             $scope.teamService = teamService;
-            $scope.teams = teamService.getAll(refresh);
+            $scope.teams = teamService.getAll();
             $scope.selectedteam = {};
             $scope.newTeam = {id: "", name: "", employees: []};
             $scope.isError = false;
@@ -14,43 +14,24 @@ var app = angular.module('team', ['employee', 'data-repository'])
                 if (teamService.isNameAvailable($scope.newTeam.name)) {
                     $scope.newTeam.id = teamService.generateIdByName($scope.newTeam.name);
                     teamService.add($scope.newTeam);
-                    $scope.teams = teamService.getAll();
                     clean();
                 } else {
                     showError();
                 }
             };
 
-            function refresh() {
-                $scope.teams = teamService.getAll();
-            }
-
-
             $scope.delete = function (empId) {
-                console.log("DELETE");
                 teamService.removeEmployee(empId);
                 $scope.selectedteam = teamService.getById($scope.selectedTeam.id);
-                //teamService.setSelectedTeam($scope.selectedTeam);
-                $rootScope.$broadcast('TeamChangedEvent', $scope.selectedTeam.id)
+                $rootScope.$broadcast('TeamChangedEvent', $scope.selectedTeam.id);
             };
 
-            $scope.open = function (team, index) {
+            $scope.selectTeam = function (selected, index) {
                 teamService.anyTeamOpen[index] = !teamService.anyTeamOpen[index];
-                $scope.selectTeam(team);
-            };
-
-            $scope.selectTeam = function (selected) {
-                console.log("SELECTED");
-                console.log(selected);
-                var isOpened = $.grep(teamService.anyTeamOpen, function (index) {
-                        return index == true;
-                    }).length != 0;
-                if (isOpened) {
-                    console.log("OPENED");
+                if (teamService.isAnyTeamOpen()) {
                     $scope.selectedTeam = selected;
                 } else {
-                    console.log("CLOSED");
-                    $scope.selectedTeam = {id: undefined};
+                    $scope.selectedTeam = {id: null};
                 }
                 teamService.setSelectedTeam($scope.selectedTeam);
                 $rootScope.$broadcast('TeamChangedEvent', $scope.selectedTeam.id)
@@ -87,8 +68,10 @@ var app = angular.module('team', ['employee', 'data-repository'])
         var anyTeamOpen = [false];
         var selectedTeam = []; //todo something with it
 
-        function getAll(callback) {
-            return teamRepositoryService.getAll(callback);
+        function getAll() {
+            console.log("got all");
+            return teamRepositoryService.getAll(
+            );
         }
 
         function getById(id) {
@@ -156,6 +139,12 @@ var app = angular.module('team', ['employee', 'data-repository'])
             teamRepositoryService.removeEmployee(selectedTeam.id, empId);
         }
 
+        function isAnyTeamOpen() {
+            return $.grep(anyTeamOpen, function (index) {
+                    return index == true;
+                }).length != 0;
+        }
+
 
         return {
             anyTeamOpen: anyTeamOpen,
@@ -169,7 +158,8 @@ var app = angular.module('team', ['employee', 'data-repository'])
             getAll: getAll,
             getById: getById,
             add: add,
-            removeEmployee: removeEmployee
+            removeEmployee: removeEmployee,
+            isAnyTeamOpen: isAnyTeamOpen
         }
     }])
 

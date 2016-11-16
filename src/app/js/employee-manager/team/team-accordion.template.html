@@ -21,7 +21,7 @@
          is-open="teamService.anyTeamOpen[$index]"
          is-disabled="true">
         <uib-accordion-heading>
-            <i ng-click="open(team,$index)" class="canClick">{{team.name}} </i>
+            <i ng-click="selectTeam(team,$index)" class="canClick">{{team.name}} </i>
         </uib-accordion-heading>
         <div ng-if="selectedTeam.employees.length==0">
             <strong>No employees in this team</strong>

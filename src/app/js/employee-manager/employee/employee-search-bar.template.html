@@ -8,8 +8,8 @@
                class="search-bar my-search-bar">
         <ui-select-match placeholder="Select employee...">
             <a tooltip-placement="top"
-               uib-tooltip="Cannot add this employee"
-               tooltip-is-open="error.search && !isAvailable($item.id)"
+               uib-tooltip="This employee is busy"
+               tooltip-is-open="error.search && !teamService.canSynch($item.id)"
                tooltip-trigger="'none'">{{$item.name}}</a>
         </ui-select-match>
         <ui-select-choices
@@ -28,14 +28,7 @@
                         class="btn btn-xs btn-success"
                         style="width: 100%; margin-top: 5px;"
                         ng-mouseover="increaseLimit();"
-                        ng-disabled="loading">Load more...
-                </button>
-                <button
-                        ng-if="useNgMouseover"
-                        class="btn btn-xs btn-danger"
-                        style="width: 100%; margin-top: 5px;"
-                        ng-mouseover="increaseLimit();"
-                        ng-disabled="loading">Mouse over load more...
+                        ng-disabled="loading">NEXT
                 </button>
             </div>
 
