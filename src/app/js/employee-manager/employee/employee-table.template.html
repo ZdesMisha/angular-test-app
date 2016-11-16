@@ -1,5 +1,8 @@
+<div class="form-group table-filter">
+    <input type="text" class="form-control" placeholder="Filter" ng-model="tableSearch" ng-keydown="clear()">
+</div>
 <div class="constrained">
-    <table class="table table-hover " infinite-scroll="getNextPage()"
+    <table class="table table-hover " infinite-scroll="increaseLimit()"
            infinite-scroll-container='".constrained"'>
         <tr>
             <th>Name</th>
@@ -10,17 +13,17 @@
         </tr>
 
         <tbody>
-        <tr ng-repeat="employee in showedEmployees">
-            <td>{{employee.name}}</td>
+        <tr ng-repeat="employee in employees | employeeFilter: {name: tableSearch, job: tableSearch, grade:tableSearch} | limitTo: pagination.limit">
+            <td ng-bind-html="employee.name + employee.isTag| highlight: $select.search">{{employee.name}}</td>
             <td>{{employee.age}}</td>
             <td>{{employee.grade}}</td>
             <td>{{employee.job}}</td>
             <td>
                 <button type="button" ng-click="addEmployee(employee)" class="btn btn-sm btn-success"
-                        ng-disabled="!teamService.accordionOpen.some(isOpened)"
+                        ng-disabled="!teamService.anyTeamOpen.some(isOpened)"
                         tooltip-placement="left"
                         uib-tooltip="Sorry, this user already has team"
-                        tooltip-is-open="isError && {{employee.id}}==employeeToAdd.id"
+                        tooltip-is-open="error.table && employee.id==employeeToAdd.id"
                         tooltip-trigger="'none'">
                     <i class="glyphicon glyphicon-plus">
                     </i>

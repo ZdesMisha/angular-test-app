@@ -33,8 +33,17 @@ body {
 }
 
 .search-bar {
-    width: 100% !important;
+    width: 85% !important;
+    display: inline-block;
 }
+.synch-button{
+}
+
+.table-filter{
+    width: 30%;
+    margin-bottom:20px;
+}
+
 
 .my-table {
     height: 100%;
@@ -76,4 +85,9 @@ body {
 .table-hover tbody tr.highlight {
     background-color: lightgreen;
 }
+
+.canClick {
+    cursor: pointer;
+}
+
 

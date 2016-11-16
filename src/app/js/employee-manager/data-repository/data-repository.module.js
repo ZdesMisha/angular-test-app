@@ -1,53 +1,46 @@
 angular.module('data-repository', [])
     .factory('EmployeeRepositoryService', ['$http', function ($http) {
+
         var employees = [];
-        uploadData()
+
+        function upload() {
+            return $http.get('/data.json').then(function (response) {
+                employees = response.data;
+                return employees;
+            }, function () {
+                employees = [];
+            });
+        }
+
         function getById(id) {
             return $.grep(employees, function (next) {
                 return next.id == id;
-            });
+            })[0];
         }
 
         function getAll() {
             return employees;
         }
 
-        function uploadData() {
-            $http.get('/data.json').then(function (response) {
-                employees = response.data;
-            }, function () {
-                employees = [];
-            });
-        }
-
         return {
             getById: getById,
-            getAll: getAll
+            getAll: getAll,
+            upload:upload
+
         }
     }])
+
     .factory('TeamRepositoryService', function () {
         var teams = [];
 
         function getById(id) {
             return $.grep(teams, function (next) {
-                return next.id = id;
-            });
+                return next.id == id;
+            })[0];
         }
 
         function getAll() {
             return teams;
-        }
-
-        function generateIdByName(name) {
-            var hash = 0, chr, i;
-            var len = name.length;
-            if (len === 0) return hash;
-            for (i = 0; i < len; i++) {
-                chr = name.charCodeAt(i);
-                hash = ((hash << 5) - hash) + chr;
-                hash |= 0;
-            }
-            return hash;
         }
 
         function isNameAvailable(name) {
@@ -56,8 +49,20 @@ angular.module('data-repository', [])
                 }).length == 0;
         }
 
-        function addTeam(team) {
+        function add(team) {
             teams.push(team);
+        }
+
+        function removeEmployee(teamId, employeeId) {
+            teams.forEach(function (team) {
+                if (team.id == teamId) {
+                    team.employees.forEach(function (employee) {
+                        if (employee.id == employeeId) {
+                            team.employees.splice(team.employees.indexOf(employee), 1);
+                        }
+                    })
+                }
+            })
         }
 
         function update(team) {
@@ -70,16 +75,16 @@ angular.module('data-repository', [])
         }
 
         // add initial team
-        addTeam({id: 1, name: "Test team", employees: []});
+        add({id: 12345678, name: "Moody team", employees: []});
         console.log("INITIATING DATA STORE");
 
         return {
-            getById: getById,
-            generateIdByName: generateIdByName,
-            addTeam: addTeam,
+            add: add,
             update: update,
             isNameAvailable: isNameAvailable,
-            getAll: getAll
+            getAll: getAll,
+            getById: getById,
+            removeEmployee: removeEmployee,
         }
 
     });

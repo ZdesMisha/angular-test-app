@@ -17,14 +17,27 @@
 </div>
 <uib-accordion close-others="true">
     <div uib-accordion-group class="panel-default"
-         heading="{{team.name}}"
          ng-repeat="team in teams"
-         ng-click="selectTeam(team)" is-open="teamService.accordionOpen[$index]">
-        <ul class="list-group">
+         is-open="teamService.anyTeamOpen[$index]"
+         is-disabled="true">
+        <uib-accordion-heading>
+            <i ng-click="open(team,$index)" class="canClick">{{team.name}} </i>
+        </uib-accordion-heading>
+        <div ng-if="selectedTeam.employees.length==0">
+            <strong>No employees in this team</strong>
+        </div>
+        <ul ng-if="selectedTeam.employees.length!=0" class="list-group">
             <li class="list-group-item"
                 ng-repeat="employee in selectedTeam.employees"
                 tooltip-placement="top"
-                uib-tooltip="{{employee.grade}} {{employee.job}}, {{employee.age}} years">{{employee.name}}
+                uib-tooltip="{{employee.grade}} {{employee.job}}, {{employee.age}} years">
+                <i class="canClick">
+                    {{employee.name}}
+                </i>
+                <button class="pull-right btn btn-xs btn-danger" ng-click="delete(employee.id)">
+                    <i class="glyphicon glyphicon-minus">
+                    </i>
+                </button>
             </li>
         </ul>
     </div>

@@ -15,6 +15,7 @@
     <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
     <script src="bower_components/angular-ui-select/dist/select.js"></script>
     <script src="bower_components/angular-route/angular-route.js"></script>
+    <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
     <script src="bower_components/angular-bootstrap/ui-bootstrap.js"></script>
     <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
 
@@ -31,7 +32,7 @@
     <div class="row row-offcanvas row-offcanvas-right my-row">
         <div class="col-xs-12 col-sm-9 my-row">
             <view-panel></view-panel>
-            <div ng-view class="my-row"></div>
+            <div ui-view class="my-row"></div>
         </div>
         <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar">
             <team-accordion></team-accordion>
@@ -42,6 +43,6 @@
 </body>
 <hr>
 <footer class="footer">
-    <p>&copy; Misha Kharkov Production</p>
+    <p>&copy; MKh</p>
 </footer>
 </html>
