@@ -4,7 +4,6 @@
   "description": "Datart Angular Course Project",
   "main": "index.js",
   "scripts": {
-    "prestart": "npm install",
     "postinstall": "bower install",
     "start": "http-server ./src/app -a localhost -p 8000 -c-1"
   },

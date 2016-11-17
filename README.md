@@ -22,4 +22,11 @@ employee-manager.module.js - submodule, responsible for managing application sta
             - EmployeeTable - directive for managing employees by using table.
             - EmployeeSearchBar - directive for managing employees by using search bar.
 
+------HOW TO START APP:------
+
+- make sure you have npm installed
+- go to application main directory
+- run : "npm start"
+- check working application on localhost:8000
+
 
