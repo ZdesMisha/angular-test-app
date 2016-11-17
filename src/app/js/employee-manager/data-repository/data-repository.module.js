@@ -25,7 +25,7 @@ angular.module('data-repository', [])
         return {
             getById: getById,
             getAll: getAll,
-            upload:upload
+            upload: upload
         }
     }])
 

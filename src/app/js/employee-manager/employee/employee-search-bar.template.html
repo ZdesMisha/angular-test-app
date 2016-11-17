@@ -1,42 +1,38 @@
 <div ng-model="selectedEmployees" ng-keydown="clear()">
     <ui-select multiple
                remove-selected="false"
-               tagging="transform"
-               theme="bootstrap"
                ng-disabled="disabled"
-               title="Choose a person"
                class="search-bar my-search-bar">
         <ui-select-match placeholder="Select employee...">
-            <a tooltip-placement="top"
-               uib-tooltip="This employee is busy"
-               tooltip-is-open="error.search && !teamService.canSynch($item.id)"
-               tooltip-trigger="'none'">{{$item.name}}</a>
+            <i tooltip-placement="top"
+               uib-tooltip="This employee is not available"
+               tooltip-is-open="error.search && !teamService.canRefresh($item.id)"
+               tooltip-trigger="'none'"
+               uib-popover="{{$item.grade}} {{$item.job}}, {{$item.age}} years"
+               popover-trigger="'mouseenter'"
+               popover-placement="bottom">{{$item.name}}</i>
         </ui-select-match>
         <ui-select-choices
                 refresh-delay="300"
                 repeat="employee in employees | employeeFilter: {name: $select.search, job: $select.search, grade:$select.search} | limitTo: pagination.limit">
-            <div ng-if="employee.isTag" ng-bind-html="employee.name +''| highlight: $select.search"></div>
-            <div ng-if="!employee.isTag" ng-bind-html="employee.name + employee.isTag| highlight: $select.search"></div>
+            <div ng-bind-html="employee.name"></div>
             <small>
                 job: {{employee.job}};
                 grade: {{employee.grade}};
-                age: <span ng-bind-html="''+employee.age | highlight: $select.search"></span>
+                age: {{employee.age}}
             </small>
             <div ng-if="$index == pagination.limit-1">
                 <button
-                        ng-if="!useNgMouseover"
-                        class="btn btn-xs btn-success"
-                        style="width: 100%; margin-top: 5px;"
-                        ng-mouseover="increaseLimit();"
+                        class="btn btn-xs btn-success page-btn"
+                        ng-mouseover="increaseLimit()"
                         ng-disabled="loading">NEXT
                 </button>
             </div>
-
         </ui-select-choices>
 
     </ui-select>
-    <button class="btn btn-default btn-md synch-button" ng-click="synchronizeEmployees()"
-            ng-disabled="!teamService.anyTeamOpen.some(isOpened)">Synch
+    <button class="btn btn-default btn-sm synch-button" ng-click="refreshEmployees()"
+            ng-disabled="!teamService.anyTeamOpen.some(isOpened)">Refresh
     </button>
 </div>
 

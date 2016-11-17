@@ -21,7 +21,7 @@ angular.module('team', ['employee', 'data-repository'])
             };
 
             $scope.delete = function (empId) {
-                teamService.removeEmployee(empId);
+                teamService.removeEmployee($scope.selectedTeam.id, empId);
                 $scope.selectedteam = teamService.getById($scope.selectedTeam.id);
                 $rootScope.$broadcast('TeamChangedEvent', $scope.selectedTeam.id);
             };
@@ -30,14 +30,16 @@ angular.module('team', ['employee', 'data-repository'])
                 teamService.anyTeamOpen[index] = !teamService.anyTeamOpen[index];
                 if (teamService.isAnyTeamOpen()) {
                     $scope.selectedTeam = selected;
+
                 } else {
-                    $scope.selectedTeam = {id: null};
+                    $scope.selectedTeam = {id: null, name: null, employees: []};
+
                 }
-                teamService.setSelectedTeam($scope.selectedTeam);
                 $rootScope.$broadcast('TeamChangedEvent', $scope.selectedTeam.id)
+                $rootScope.selectedTeamId = $scope.selectedTeam.id;
             };
 
-            $scope.$on("SynchronizeEvent", function (event, employees) {
+            $scope.$on("RefreshEvent", function (event, employees) {
                 var modifiedTeam = $scope.selectedTeam;
                 modifiedTeam.employees = employees;
                 teamService.update(modifiedTeam);
@@ -49,6 +51,7 @@ angular.module('team', ['employee', 'data-repository'])
                 modifiedTeam.employees.push(employee);
                 teamService.update(modifiedTeam);
                 $scope.selectedTeam = teamService.getById($scope.selectedTeam.id);
+
             });
 
             function clean() {
@@ -63,19 +66,21 @@ angular.module('team', ['employee', 'data-repository'])
             }
         }])
 
-    .factory('TeamService', ['TeamRepositoryService', function (teamRepositoryService) {
+    .factory('TeamService', ['TeamRepositoryService', '$rootScope', function (teamRepositoryService, $rootScope) {
 
         var anyTeamOpen = [false];
-        var selectedTeam = []; //todo something with it
 
         function getAll() {
-            console.log("got all");
             return teamRepositoryService.getAll(
             );
         }
 
         function getById(id) {
-            return teamRepositoryService.getById(id)
+            if (id != null) {
+                return teamRepositoryService.getById(id);
+            } else {
+                return {id: "", name: "", employees: []};
+            }
         }
 
         function add(team) {
@@ -86,14 +91,6 @@ angular.module('team', ['employee', 'data-repository'])
             teamRepositoryService.isNameAvailable(name);
         }
 
-        function isEmployeeInSelectedTeam(empId) {
-            selectedTeam.employees.forEach(function (employee) {
-                if (employee.id = empId) {
-                    return true;
-                }
-            });
-        }
-
         function canAdd(empId) {
             return $.grep(teamRepositoryService.getAll(), function (team) {
                     return $.grep(team.employees, function (employee) {
@@ -102,10 +99,10 @@ angular.module('team', ['employee', 'data-repository'])
                 }).length == 0;
         }
 
-        function canSynch(empId) {
+        function canRefresh(empId) {
             return $.grep(teamRepositoryService.getAll(), function (team) {
                     return $.grep(team.employees, function (employee) {
-                            return employee.id == empId && team.id != selectedTeam.id;
+                            return employee.id == empId && team.id != $rootScope.selectedTeamId;
                         }).length != 0;
                 }).length == 0;
         }
@@ -131,12 +128,8 @@ angular.module('team', ['employee', 'data-repository'])
             return teamRepositoryService.isNameAvailable(name);
         }
 
-        function setSelectedTeam(team) {
-            selectedTeam = team;
-        }
-
-        function removeEmployee(empId) {
-            teamRepositoryService.removeEmployee(selectedTeam.id, empId);
+        function removeEmployee(teamId, empId) {
+            teamRepositoryService.removeEmployee(teamId, empId);
         }
 
         function isAnyTeamOpen() {
@@ -150,8 +143,7 @@ angular.module('team', ['employee', 'data-repository'])
             anyTeamOpen: anyTeamOpen,
             update: update,
             canAdd: canAdd,
-            canSynch: canSynch,
-            setSelectedTeam: setSelectedTeam,
+            canRefresh: canRefresh,
             isEmployeeNameValid: isEmployeeNameValid,
             generateIdByName: generateIdByName,
             isNameAvailable: isNameAvailable,
@@ -162,15 +154,6 @@ angular.module('team', ['employee', 'data-repository'])
             isAnyTeamOpen: isAnyTeamOpen
         }
     }])
-
-    .directive('teamBar', function () {
-        return {
-            restrict: "E",
-            templateUrl: 'js/employee-manager/team/team-bar.template.html',
-            controller: 'TeamController',
-            controllerAs: "addCtrl"
-        }
-    })
 
     .directive('teamAccordion', function () {
         return {

@@ -36,14 +36,15 @@ body {
     width: 85% !important;
     display: inline-block;
 }
-.synch-button{
+
+.synch-button {
+    margin-top: -20px;
 }
 
-.table-filter{
+.table-filter {
     width: 30%;
-    margin-bottom:20px;
+    margin-bottom: 20px;
 }
-
 
 .my-table {
     height: 100%;
@@ -90,4 +91,8 @@ body {
     cursor: pointer;
 }
 
+.page-btn {
+    width: 100%;
+    margin-top: 5px;
+}
 

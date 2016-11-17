@@ -14,25 +14,27 @@
         </tr>
 
         <tbody>
-        <tr ng-repeat="employee in employees | employeeFilter: {name: tableSearch, job: tableSearch, grade:tableSearch} | limitTo: pagination.limit">
-            <td ng-bind-html="employee.name + employee.isTag| highlight: $select.search">{{employee.name}}</td>
-            <td>{{employee.age}}</td>
-            <td>{{employee.grade}}</td>
-            <td>{{employee.job}}</td>
-            <td>
-                <button type="button" ng-click="addEmployee(employee)" class="btn btn-sm btn-success"
-                        ng-disabled="!teamService.anyTeamOpen.some(isOpened)"
-                        tooltip-placement="left"
-                        uib-tooltip="Sorry, this user already has team"
-                        tooltip-is-open="error.table && employee.id==employeeToAdd.id"
-                        tooltip-trigger="'none'">
-                    <i class="glyphicon glyphicon-plus">
-                    </i>
-                </button>
-
-            </td>
-
-        </tr>
+                <tr ng-repeat="employee in employees | employeeFilter: {name: tableSearch, job: tableSearch, grade:tableSearch} | limitTo: pagination.limit"
+                    uib-popover="Feedback about {{employee.name}}"
+                    popover-title="Feedback"
+                    popover-trigger="'outsideClick'"
+                    popover-placement="bottom">
+                    <td>{{employee.name}}</td>
+                    <td>{{employee.age}}</td>
+                    <td>{{employee.grade}}</td>
+                    <td>{{employee.job}}</td>
+                    <td>
+                        <button type="button" ng-click="addEmployee(employee)" class="btn btn-sm btn-success"
+                                ng-disabled="!teamService.anyTeamOpen.some(isOpened)"
+                                tooltip-placement="left"
+                                uib-tooltip="This user is not available"
+                                tooltip-is-open="error.table && employee.id==employeeToAdd.id"
+                                tooltip-trigger="'none'">
+                            <i class="glyphicon glyphicon-plus">
+                            </i>
+                        </button>
+                    </td>
+                </tr>
         </tbody>
     </table>
 

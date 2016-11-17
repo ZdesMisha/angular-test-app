@@ -34,51 +34,40 @@ angular.module('employee', ['ui-select-infinity', 'infinite-scroll', 'data-repos
             };
             $scope.teamService = teamService;
             $scope.employees = [];
-            $scope.selectedEmployees = [];
+            $scope.selectedEmployees = teamService.getById($rootScope.selectedTeamId).employees;
             $scope.employeeToAdd = {};
             $scope.tableSearch = "";
-
 
             employeeService.upload().then(function (data) {
                 $scope.employees = data;
             });
-            
-            $scope.transform = function (employee) {
-                return {
-                    name: employee,
-                    age: 'unknown',
-                    grade: 'unknown',
-                    job: 'unknown'
-                };
-            };
-            
+
             $scope.clear = function () {
                 $scope.pagination.limit = 30;
             };
-            
+
             $scope.increaseLimit = function () {
-                console.log("limit increased"); //todo HOW TO INCREASE LIMIT CORRECTLY???
                 $scope.pagination.limit += $scope.pagination.limit;
             };
 
             $scope.isOpened = function (index) {
                 return index == true;
             };
-            
-            $scope.synchronizeEmployees = function () {
-                var employeesToSynch = [];
+
+            $scope.refreshEmployees = function () {
+                var employeesToRefresh = [];
                 if (teamService.isAnyTeamOpen()) {
                     $scope.selectedEmployees.forEach(function (employee) {
-                        if (teamService.canSynch(employee.id)) {
-                            employeesToSynch.push(employee);
+                        if (teamService.canRefresh(employee.id)) {
+                            employeesToRefresh.push(employee);
                         } else {
                             showSearchTooltip();
                         }
                     });
-                    $rootScope.$broadcast('SynchronizeEvent', employeesToSynch);
+                    $rootScope.$broadcast('RefreshEvent', employeesToRefresh);
                 }
             };
-            
+
             $scope.addEmployee = function (employee) {
                 $scope.employeeToAdd = employee;
                 if (teamService.isAnyTeamOpen()) {
@@ -89,7 +78,7 @@ angular.module('employee', ['ui-select-infinity', 'infinite-scroll', 'data-repos
                     }
                 }
             };
-            
+
             $scope.$on('TeamChangedEvent', function (event, teamId) {
                 if (teamId != null) {
                     $scope.selectedEmployees = teamService.getById(teamId).employees || [];
@@ -97,14 +86,14 @@ angular.module('employee', ['ui-select-infinity', 'infinite-scroll', 'data-repos
                     $scope.selectedEmployees = [];
                 }
             });
-            
+
             function showTableTooltip() {
                 $scope.error.table = true;
                 $timeout(function () {
                     $scope.error.table = false;
                 }, 3000);
             }
-            
+
             function showSearchTooltip() {
                 $scope.error.search = true;
                 $timeout(function () {

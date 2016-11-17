@@ -5,7 +5,6 @@ angular.module('app', [
     'ngSanitize',
     'ngRoute',
     'ui.bootstrap',
-    // 'ngAnimate',
 
     // --- custom user modules ---
     'employee-manager'
